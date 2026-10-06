@@ -72,11 +72,43 @@ def gameover(screen: pg.Surface) -> None:
     # 5秒間表示
     time.sleep(5)
 
+def get_kk_img(original_img: pg.Surface, sum_mv: list[int]) -> pg.Surface:
+    """
+    こうかとんの移動方向に応じた画像を返す。
+    """
+    if sum_mv == [0, -5]:       # 上
+        return pg.transform.rotozoom(original_img, 90, 0.9)
+
+    elif sum_mv == [0, 5]:      # 下
+        return pg.transform.rotozoom(original_img, -90, 0.9)
+
+    elif sum_mv == [-5, 0]:     # 左
+        return pg.transform.flip(original_img, True, False)
+
+    elif sum_mv == [5, 0]:      # 右
+        return original_img
+
+    elif sum_mv == [-5, -5]:    # 左上
+        return pg.transform.rotozoom(original_img, 45, 0.9)
+
+    elif sum_mv == [5, -5]:     # 右上
+        return pg.transform.rotozoom(original_img, 45, 0.9)
+
+    elif sum_mv == [-5, 5]:     # 左下
+        return pg.transform.rotozoom(original_img, -45, 0.9)
+
+    elif sum_mv == [5, 5]:      # 右下
+        return pg.transform.rotozoom(original_img, -45, 0.9)
+
+    else:                       # 動いていない
+        return original_img
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")    
-    kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
+    kk_img = pg.image.load("fig/3.png")
+    kk_img = pg.transform.rotozoom(kk_img, 0, 0.9)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
     bb_img = pg.Surface((20, 20))  # 練習2：空のSurface
@@ -108,11 +140,25 @@ def main():
         #     sum_mv[0] -= 5
         # if key_lst[pg.K_RIGHT]:
         #     sum_mv[0] += 5
+
+
+
+    
         for k, tpl in DELTA.items():
             if key_lst[k]:
                 sum_mv[0] += tpl[0]  # 横方向移動量
                 sum_mv[1] += tpl[1]  # 縦方向移動量
+# 移動方向に合わせてこうかとんの向きを変更
+        kk_img = get_kk_img(
+            pg.image.load("fig/3.png"),
+            sum_mv
+        )
+        kk_rct = kk_img.get_rect(center=kk_rct.center)
         kk_rct.move_ip(sum_mv)
+
+
+
+        
         if check_bound(kk_rct) != (True, True):  # どこからしらはみ出てる
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])  # 先程の動きをキャンセルする
         screen.blit(kk_img, kk_rct)
