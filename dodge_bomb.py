@@ -104,7 +104,7 @@ def get_kk_img(original_img: pg.Surface, sum_mv: list[int]) -> pg.Surface:
         return pg.transform.rotozoom(original_img, 45, 0.9)
 
     else:                           # 動いていない
-        return original_img
+        return original_img 
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
