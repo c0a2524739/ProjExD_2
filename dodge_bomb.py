@@ -74,33 +74,36 @@ def gameover(screen: pg.Surface) -> None:
 
 def get_kk_img(original_img: pg.Surface, sum_mv: list[int]) -> pg.Surface:
     """
-    こうかとんの移動方向に応じた画像を返す。
+    こうかとんの移動方向に応じて画像の向きを変更する。
     """
-    if sum_mv == [0, -5]:       # 上
-        return pg.transform.rotozoom(original_img, 90, 0.9)
 
-    elif sum_mv == [0, 5]:      # 下
+    if sum_mv == [0, -5]:          # 上
         return pg.transform.rotozoom(original_img, -90, 0.9)
 
-    elif sum_mv == [-5, 0]:     # 左
+    elif sum_mv == [0, 5]:         # 下
+        return pg.transform.rotozoom(original_img, 90, 0.9)
+
+    elif sum_mv == [5, 0]:        # 左
         return pg.transform.flip(original_img, True, False)
 
-    elif sum_mv == [5, 0]:      # 右
+    elif sum_mv == [-5, 0]:         # 右
         return original_img
 
-    elif sum_mv == [-5, -5]:    # 左上
-        return pg.transform.rotozoom(original_img, 45, 0.9)
+    elif sum_mv == [5, -5]:       # 左上
+        img = pg.transform.rotozoom(original_img, -45, 0.9)
+        return pg.transform.flip(img, True, False)
 
-    elif sum_mv == [5, -5]:     # 右上
-        return pg.transform.rotozoom(original_img, 45, 0.9)
-
-    elif sum_mv == [-5, 5]:     # 左下
+    elif sum_mv == [-5, -5]:        # 右上
         return pg.transform.rotozoom(original_img, -45, 0.9)
 
-    elif sum_mv == [5, 5]:      # 右下
-        return pg.transform.rotozoom(original_img, -45, 0.9)
+    elif sum_mv == [5, 5]:        # 左下
+        img = pg.transform.rotozoom(original_img, 45, 0.9)
+        return pg.transform.flip(img, True, False)
 
-    else:                       # 動いていない
+    elif sum_mv == [-5, 5]:         # 右下
+        return pg.transform.rotozoom(original_img, 45, 0.9)
+
+    else:                           # 動いていない
         return original_img
 
 def main():
