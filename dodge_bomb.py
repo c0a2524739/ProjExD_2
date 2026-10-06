@@ -1,8 +1,8 @@
 import os
 import random
 import sys
+import time
 import pygame as pg
-
 
 WIDTH, HEIGHT = 1100, 650
 DELTA = {
@@ -26,7 +26,51 @@ def check_bound(rect: pg.Rect) -> tuple[bool, bool]:
     if rect.top < 0 or HEIGHT < rect.bottom:  # 縦方向判定
         tate = False
     return yoko, tate
-    
+def gameover(screen: pg.Surface) -> None:
+    # 黒い背景
+    black = pg.Surface((WIDTH, HEIGHT))
+    black.fill((0, 0, 0))
+    black.set_alpha(180)
+
+    # GAME OVERの文字
+    font = pg.font.Font(None, 100)
+    text = font.render("Game Over", True, (255, 255, 255))
+
+    # 泣いているこうかとんをロード
+    kk_img = pg.image.load("fig/8.png")
+    kk_img = pg.transform.rotozoom(kk_img, 0, 1)
+
+    # 黒い画面を表示
+    screen.blit(black, (0, 0))
+
+    # 左側の泣いているこうかとん
+    screen.blit(
+        kk_img,
+        kk_img.get_rect(
+            center=(WIDTH // 2 - 250, 200)
+        )
+    )
+
+    # GAME OVER
+    screen.blit(
+        text,
+        text.get_rect(
+            center=(WIDTH // 2, 200)
+        )
+    )
+
+    # 右側の泣いているこうかとん
+    screen.blit(
+        kk_img,
+        kk_img.get_rect(
+            center=(WIDTH // 2 + 250, 200)
+        )
+    )
+
+    pg.display.update()
+
+    # 5秒間表示
+    time.sleep(5)
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -50,8 +94,8 @@ def main():
                 return
         screen.blit(bg_img, [0, 0]) 
 
-        if kk_rct.colliderect(bb_rct):  # 練習4：kkとbbのrectが重なっていたら
-            print("game over")
+        if kk_rct.colliderect(bb_rct):
+            gameover(screen)
             return
 
         key_lst = pg.key.get_pressed()
